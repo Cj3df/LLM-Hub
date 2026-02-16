@@ -114,7 +114,8 @@ android {
             // Pick only the architecture we need to reduce size and alignment issues
             // Prevent duplicate .so files from different MediaPipe tasks modules
             pickFirsts += setOf("**/libmediapipe_tasks_text_jni.so")
-            // Ensure the LLM Inference Engine JNI library is included and not stripped or excluded
+            // MediaPipe LLM Inference API requires this JNI bridge at runtime.
+            // Keep one copy when multiple MediaPipe artifacts contribute it.
             pickFirsts += setOf("**/libllm_inference_engine_jni.so")
             // Safety fallback — the stripOnnxFromNexa task removes Nexa's copy from the AAR,
             // but if it hasn't run yet this prevents the build from failing on duplicate.
@@ -151,6 +152,7 @@ android.bundle {
 }
 
 dependencies {
+    val mediapipeVersion = "0.10.32"
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -220,9 +222,9 @@ dependencies {
     // NOTE: Version 0.10.29 has slower initial load for multimodal models due to eager
     // vision/audio component initialization. Disable vision/audio when not needed for faster loading.
     // tasks-genai latest: 0.10.29; tasks-text latest: 0.10.29
-    implementation("com.google.mediapipe:tasks-genai:0.10.32")
-    implementation("com.google.mediapipe:tasks-vision:0.10.32")
-    implementation("com.google.mediapipe:tasks-text:0.10.32")
+    implementation("com.google.mediapipe:tasks-genai:$mediapipeVersion")
+    implementation("com.google.mediapipe:tasks-vision:$mediapipeVersion")
+    implementation("com.google.mediapipe:tasks-text:$mediapipeVersion")
     
     // Protobuf - required for MediaPipe
     implementation("com.google.protobuf:protobuf-java:3.25.1")
