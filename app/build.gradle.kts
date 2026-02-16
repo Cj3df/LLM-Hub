@@ -39,6 +39,9 @@ android {
             // This helps with alignment but ultimate fix requires library maintainers
             // to rebuild native libraries with 16KB alignment
             debugSymbolLevel = "FULL"
+            // The LLM Inference API is optimized for high-end Android devices and mainly supports arm64-v8a.
+            // Restricting ABI filters prevents loading errors on unsupported architectures.
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
         }
     }
     
@@ -111,6 +114,8 @@ android {
             // Pick only the architecture we need to reduce size and alignment issues
             // Prevent duplicate .so files from different MediaPipe tasks modules
             pickFirsts += setOf("**/libmediapipe_tasks_text_jni.so")
+            // Ensure the LLM Inference Engine JNI library is included and not stripped or excluded
+            pickFirsts += setOf("**/libllm_inference_engine_jni.so")
             // Safety fallback — the stripOnnxFromNexa task removes Nexa's copy from the AAR,
             // but if it hasn't run yet this prevents the build from failing on duplicate.
             pickFirsts += setOf("**/libonnxruntime.so")
