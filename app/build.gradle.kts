@@ -39,6 +39,9 @@ android {
             // This helps with alignment but ultimate fix requires library maintainers
             // to rebuild native libraries with 16KB alignment
             debugSymbolLevel = "FULL"
+            // The LLM Inference API is optimized for high-end Android devices and mainly supports arm64-v8a.
+            // Restricting ABI filters prevents loading errors on unsupported architectures.
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
         }
     }
     
